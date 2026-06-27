@@ -1,0 +1,302 @@
+{% extends "base.html" %}
+{% block title %}{{ meta_title }}{% endblock %}
+
+{% block content %}
+
+<!-- ==================== HERO 区域 ==================== -->
+<section class="hero-section d-flex align-items-center">
+    <div class="container text-center text-white">
+        <h1 class="display-3 fw-bold mb-3 animate-fade-in">为半导体先进制程提供关键材料解决方案</h1>
+        <p class="lead mb-4 opacity-75 animate-fade-in delay-1">国产替代 · 技术赋能 · 快速响应</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap animate-fade-in delay-2">
+            <a href="{{ url_for('products.product_list') }}" class="btn btn-light btn-lg px-4">
+                <i class="bi bi-box-seam me-2"></i>浏览产品
+            </a>
+            <a href="{{ url_for('main.contact') }}" class="btn btn-outline-light btn-lg px-4">
+                <i class="bi bi-chat-dots me-2"></i>技术咨询
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== AI 动态快讯 ==================== -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h2 class="fw-bold mb-1">
+                    <i class="bi bi-newspaper text-primary me-2"></i>半导体行业快讯
+                </h2>
+                <p class="text-muted mb-0">每日AI智能聚合，掌握行业最新动态</p>
+            </div>
+            <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">
+                <i class="bi bi-robot me-1"></i>AI 自动生成
+            </span>
+        </div>
+
+        <div class="row g-4">
+            {% if latest_news %}
+                {% for news in latest_news %}
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm h-100 news-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="badge bg-info bg-opacity-10 text-info">快讯</span>
+                                <small class="text-muted">{{ news.published_at | datetime }}</small>
+                            </div>
+                            <h6 class="card-title fw-bold">{{ news.title }}</h6>
+                            <p class="card-text text-muted small">{{ news.summary }}</p>
+                            {% if news.source %}
+                            <small class="text-muted">来源: {{ news.source }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12 text-center py-4">
+                    <p class="text-muted">暂无行业快讯，快讯将于每日自动生成</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{{ url_for('technology.article_list') }}?type=news" class="btn btn-outline-primary">
+                查看全部动态 <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== 核心产品 ==================== -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">核心产品</h2>
+            <p class="text-muted">为半导体制造各环节提供关键材料支持</p>
+        </div>
+
+        <div class="row g-4">
+            {% for product in featured_products %}
+            <div class="col-lg-3 col-md-6">
+                <div class="card product-card h-100 border-0 shadow-sm">
+                    <div class="product-img-wrapper">
+                        {% if product.image %}
+                        <img src="{{ url_for('static', filename='images/' + product.image) }}" class="card-img-top" alt="{{ product.name }}">
+                        {% else %}
+                        <div class="product-img-placeholder d-flex align-items-center justify-content-center">
+                            <i class="bi bi-cpu" style="font-size: 3rem; color: #c0c0c0;"></i>
+                        </div>
+                        {% endif %}
+                        {% if product.is_new %}
+                        <span class="badge bg-danger position-absolute top-0 end-0 m-2">新品</span>
+                        {% endif %}
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title fw-bold">{{ product.name }}</h5>
+                        {% if product.model %}
+                        <p class="text-primary small mb-1">型号: {{ product.model }}</p>
+                        {% endif %}
+                        <p class="card-text text-muted small flex-grow-1">{{ product.summary or product.subtitle or '' }}</p>
+                        <div class="d-flex gap-2 mt-auto">
+                            <a href="{{ url_for('products.product_detail', slug=product.slug) }}" class="btn btn-outline-primary btn-sm flex-grow-1">详情</a>
+                            <a href="{{ url_for('products.compare_tool') }}?add={{ product.id }}" class="btn btn-outline-secondary btn-sm">
+                                <i class="bi bi-arrow-left-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{{ url_for('products.product_list') }}" class="btn btn-primary btn-lg px-4">
+                查看全部产品 <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== 为什么选择清徽 ==================== -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">为什么选择清徽</h2>
+            <p class="text-muted">以技术驱动服务，以专业赢得信任</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="text-center p-4">
+                    <div class="feature-icon mx-auto mb-3">
+                        <i class="bi bi-currency-exchange fs-2 text-primary"></i>
+                    </div>
+                    <h5 class="fw-bold">国产替代方案</h5>
+                    <p class="text-muted small">性能对标进口品牌，价格优势显著，供货周期短，助力国产化进程</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center p-4">
+                    <div class="feature-icon mx-auto mb-3">
+                        <i class="bi bi-file-earmark-bar-graph fs-2 text-primary"></i>
+                    </div>
+                    <h5 class="fw-bold">透明技术对比</h5>
+                    <p class="text-muted small">AI驱动的智能对比工具，参数逐项对标，选型决策有据可依</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center p-4">
+                    <div class="feature-icon mx-auto mb-3">
+                        <i class="bi bi-lightning-charge fs-2 text-primary"></i>
+                    </div>
+                    <h5 class="fw-bold">快速响应</h5>
+                    <p class="text-muted small">样品2-3天送达，技术支持24小时内响应，紧急需求可协调现货</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center p-4">
+                    <div class="feature-icon mx-auto mb-3">
+                        <i class="bi bi-people fs-2 text-primary"></i>
+                    </div>
+                    <h5 class="fw-bold">技术支持团队</h5>
+                    <p class="text-muted small">拥有丰富工艺经验的工程师团队，提供从选型到工艺适配的全流程支持</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center p-4">
+                    <div class="feature-icon mx-auto mb-3">
+                        <i class="bi bi-diagram-3 fs-2 text-primary"></i>
+                    </div>
+                    <h5 class="fw-bold">知识图谱赋能</h5>
+                    <p class="text-muted small">AI驱动的半导体工艺知识库，为客户提供超越材料本身的技术洞察</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center p-4">
+                    <div class="feature-icon mx-auto mb-3">
+                        <i class="bi bi-shield-check fs-2 text-primary"></i>
+                    </div>
+                    <h5 class="fw-bold">品质保障</h5>
+                    <p class="text-muted small">严格的来料检测和批次管理，确保每批产品性能稳定可靠</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== 知识图谱入口 ==================== -->
+<section class="py-5 bg-primary text-white">
+    <div class="container text-center">
+        <i class="bi bi-diagram-3 display-1 mb-3 d-block opacity-75"></i>
+        <h2 class="fw-bold mb-3">探索半导体工艺知识图谱</h2>
+        <p class="lead mb-4 opacity-90">一个由AI驱动的交互式半导体工艺知识库</p>
+
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-4">
+                        <div class="py-2">
+                            <div class="display-6 fw-bold">{{ kg_stats.get('node_count', 200) }}+</div>
+                            <small>工艺节点</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="py-2">
+                            <div class="display-6 fw-bold">{{ kg_stats.get('relation_count', 1000) }}+</div>
+                            <small>关联关系</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="py-2">
+                            <div class="display-6 fw-bold">{{ kg_stats.get('category_count', 10) }}</div>
+                            <small>知识类别</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <a href="{{ url_for('kg_bridge.knowledge_graph_page') }}" class="btn btn-light btn-lg px-5">
+            <i class="bi bi-box-arrow-up-right me-2"></i>立即探索
+        </a>
+    </div>
+</section>
+
+<!-- ==================== 最新技术文章 ==================== -->
+<section class="py-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold mb-1">技术文章</h2>
+                <p class="text-muted mb-0">深度技术内容，助力选型决策</p>
+            </div>
+            <a href="{{ url_for('technology.article_list') }}" class="btn btn-outline-primary btn-sm">
+                查看全部 <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        <div class="row g-4">
+            {% for article in latest_articles %}
+            <div class="col-md-3 col-sm-6">
+                <div class="card border-0 shadow-sm h-100 article-card">
+                    {% if article.cover_image %}
+                    <img src="{{ url_for('static', filename='images/' + article.cover_image) }}" class="card-img-top" alt="{{ article.title }}">
+                    {% else %}
+                    <div class="article-img-placeholder d-flex align-items-center justify-content-center bg-light">
+                        <i class="bi bi-file-text fs-1 text-secondary"></i>
+                    </div>
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <small class="text-muted mb-2">{{ article.published_at | datetime }}</small>
+                        <h6 class="card-title fw-bold">{{ article.title }}</h6>
+                        <p class="card-text text-muted small flex-grow-1">{{ article.summary[:80] if article.summary else '' }}...</p>
+                        <a href="{{ url_for('technology.article_detail', slug=article.slug) }}" class="stretched-link"></a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12 text-center py-4">
+                <p class="text-muted">技术文章正在生成中...</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ==================== 技术对比工具入口 ==================== -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <h2 class="fw-bold mb-3">材料方案智能对比平台</h2>
+                <p class="text-muted mb-4">快速对比不同材料方案的性能参数，AI智能分析为您推荐最优选型。不再凭经验猜测，用数据说话。</p>
+                <ul class="list-unstyled mb-4">
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>逐项参数对比</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>AI智能分析解读</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>雷达图可视化展示</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>可导出PDF分享</li>
+                </ul>
+                <a href="{{ url_for('products.compare_tool') }}" class="btn btn-primary btn-lg">
+                    <i class="bi bi-arrow-left-right me-2"></i>进入对比中心
+                </a>
+            </div>
+            <div class="col-lg-5 text-center d-none d-lg-block">
+                <i class="bi bi-bar-chart-line-fill text-primary" style="font-size: 8rem; opacity: 0.3;"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== CTA ==================== -->
+<section class="py-5 bg-dark text-white text-center">
+    <div class="container">
+        <h2 class="fw-bold mb-3">有技术需求？</h2>
+        <p class="lead mb-4 opacity-75">我们的工程师团队为您提供专业的材料选型与工艺适配方案</p>
+        <a href="{{ url_for('main.contact') }}" class="btn btn-primary btn-lg px-5">
+            <i class="bi bi-chat-dots me-2"></i>立即咨询
+        </a>
+    </div>
+</section>
+
+{% endblock %}

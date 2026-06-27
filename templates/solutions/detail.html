@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}{{ solution.title }} - {{ site_name }}{% endblock %}
+
+{% block content %}
+<section class="py-3 bg-light border-bottom">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}" class="text-decoration-none">首页</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('solutions.solution_list') }}" class="text-decoration-none">解决方案</a></li>
+                <li class="breadcrumb-item active">{{ solution.title }}</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h1 class="fw-bold display-6 mb-4">{{ solution.title }}</h1>
+                <p class="lead text-muted mb-5">{{ solution.description }}</p>
+
+                <h3 class="fw-bold mb-3">适用产品</h3>
+                <div class="row g-3 mb-5">
+                    {% for product in solution.products %}
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center p-3 bg-light rounded-3">
+                            <i class="bi bi-check-circle-fill text-primary me-3 fs-4"></i>
+                            <div>
+                                <strong>{{ product }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <h3 class="fw-bold mb-3">应用场景</h3>
+                <div class="row g-3 mb-5">
+                    {% for app in solution.applications %}
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center p-3 border rounded-3">
+                            <i class="bi bi-geo-alt-fill text-primary me-3"></i>
+                            <span>{{ app }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="card bg-primary text-white">
+                    <div class="card-body text-center p-5">
+                        <h4 class="fw-bold mb-3">需要这个解决方案的详细资料？</h4>
+                        <p class="opacity-90 mb-4">我们的技术团队将为您提供全面的材料清单和工艺参数</p>
+                        <a href="{{ url_for('main.contact') }}?solution={{ slug }}" class="btn btn-light btn-lg px-4">
+                            <i class="bi bi-chat-dots me-2"></i>获取方案详情
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

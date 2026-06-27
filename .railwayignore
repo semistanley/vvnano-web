@@ -1,0 +1,13 @@
+.env
+.env.example
+.gitignore
+README.md
+backup/
+instance/
+uploads/*
+!uploads/.gitkeep
+docker-compose.yml
+Dockerfile
+scripts/deploy.sh
+scripts/deploy.ps1
+scripts/mysql-init.sql

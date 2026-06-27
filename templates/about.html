@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}关于我们 - {{ site_name }}{% endblock %}
+
+{% block content %}
+<section class="page-header bg-primary text-white py-5">
+    <div class="container text-center">
+        <h1 class="fw-bold mb-2">关于我们</h1>
+        <p class="mb-0 opacity-75">了解清徽半导体材料</p>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row g-5 align-items-center mb-5">
+            <div class="col-lg-6">
+                <h2 class="fw-bold mb-4">清徽（深圳）科技有限公司</h2>
+                <p>清徽（深圳）科技有限公司是一家致力于半导体材料解决方案国产替代的专业电子化学品材料公司。公司位于深圳宝安区，依托粤港澳大湾区完善的产业链优势，为国内外客户提供高性能半导体材料。</p>
+                <p>我们专注于光刻胶、电镀药水、刻蚀气体、湿电子化学品等关键半导体材料的供应与技术服务，产品广泛应用于集成电路前道制程、先进封装、光模块封装以及科研院所的前沿研究。</p>
+                <p>作为行业的新生力量，我们以"技术驱动服务"为核心理念，通过不断积累的技术知识和创新的数字化工具（如半导体知识图谱平台），为客户提供超越传统材料供应的增值服务。</p>
+            </div>
+            <div class="col-lg-6">
+                <div class="bg-light rounded-3 p-5 text-center">
+                    <i class="bi bi-building display-1 text-primary"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm text-center h-100">
+                    <div class="card-body py-5">
+                        <i class="bi bi-bullseye display-4 text-primary mb-3"></i>
+                        <h4 class="fw-bold">使命</h4>
+                        <p class="text-muted mb-0">推动半导体材料国产替代，为行业提供高性能、高性价比的材料解决方案</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm text-center h-100">
+                    <div class="card-body py-5">
+                        <i class="bi bi-eye display-4 text-primary mb-3"></i>
+                        <h4 class="fw-bold">愿景</h4>
+                        <p class="text-muted mb-0">成为半导体行业值得信赖的材料方案伙伴与知识平台</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm text-center h-100">
+                    <div class="card-body py-5">
+                        <i class="bi bi-heart display-4 text-primary mb-3"></i>
+                        <h4 class="fw-bold">价值观</h4>
+                        <p class="text-muted mb-0">专业 · 透明 · 高效 —— 用技术说话，用服务证明</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card bg-light border-0">
+            <div class="card-body p-5">
+                <h3 class="fw-bold mb-4">联系我们</h3>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <p><i class="bi bi-geo-alt text-primary me-2"></i><strong>地址:</strong> {{ company_address }}</p>
+                        <p><i class="bi bi-telephone text-primary me-2"></i><strong>电话:</strong> {{ company_phone }}</p>
+                        {% if company_phone_hk %}
+                        <p><i class="bi bi-telephone text-primary me-2"></i><strong>香港电话:</strong> {{ company_phone_hk }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <p><i class="bi bi-envelope text-primary me-2"></i><strong>邮箱:</strong> <a href="mailto:{{ company_email }}" class="text-decoration-none">{{ company_email }}</a></p>
+                        <p><i class="bi bi-globe text-primary me-2"></i><strong>网站:</strong> {{ site_url }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

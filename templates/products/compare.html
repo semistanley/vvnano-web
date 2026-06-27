@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+{% block title %}半导体材料技术对比工具 - {{ site_name }}{% endblock %}
+
+{% block content %}
+<section class="page-header bg-primary text-white py-5">
+    <div class="container text-center">
+        <h1 class="fw-bold mb-2"><i class="bi bi-arrow-left-right me-2"></i>技术对比工具</h1>
+        <p class="mb-0 opacity-75">选择产品，AI智能分析为您推荐最优选型</p>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <!-- 步骤提示 -->
+        <div class="row justify-content-center mb-5">
+            <div class="col-md-10">
+                <div class="d-flex justify-content-between">
+                    <div class="text-center">
+                        <div class="step-circle active">1</div>
+                        <small class="d-block mt-1">选择产品</small>
+                    </div>
+                    <div class="flex-grow-1 border-top mt-3 mx-2"></div>
+                    <div class="text-center">
+                        <div class="step-circle" id="step2">2</div>
+                        <small class="d-block mt-1">AI分析</small>
+                    </div>
+                    <div class="flex-grow-1 border-top mt-3 mx-2"></div>
+                    <div class="text-center">
+                        <div class="step-circle" id="step3">3</div>
+                        <small class="d-block mt-1">获取结果</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 产品选择 -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="fw-bold mb-3"><span class="badge bg-primary me-2">A</span>选择第一款产品</h5>
+                        <select class="form-select" id="productA">
+                            <option value="">-- 请选择产品 --</option>
+                            {% for cat in categories %}
+                            <optgroup label="{{ cat.name }}">
+                                {% for p in products if p.category_id == cat.id %}
+                                <option value="{{ p.id }}">{{ p.name }} {% if p.model %}({{ p.model }}){% endif %}</option>
+                                {% endfor %}
+                            </optgroup>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="fw-bold mb-3"><span class="badge bg-success me-2">B</span>选择第二款产品</h5>
+                        <select class="form-select" id="productB">
+                            <option value="">-- 请选择产品 --</option>
+                            {% for cat in categories %}
+                            <optgroup label="{{ cat.name }}">
+                                {% for p in products if p.category_id == cat.id %}
+                                <option value="{{ p.id }}">{{ p.name }} {% if p.model %}({{ p.model }}){% endif %}</option>
+                                {% endfor %}
+                            </optgroup>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 对比按钮 -->
+        <div class="text-center mb-5">
+            <button class="btn btn-primary btn-lg px-5" id="compareBtn" disabled>
+                <i class="bi bi-magic me-2"></i>AI智能对比
+            </button>
+        </div>
+
+        <!-- 加载状态 -->
+        <div id="loadingSpinner" class="text-center py-5 d-none">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">加载中...</span>
+            </div>
+            <p class="mt-3 text-muted">AI正在分析产品参数，请稍候...</p>
+        </div>
+
+        <!-- 对比结果 -->
+        <div id="compareResult" class="d-none">
+            <!-- 参数对比表 -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white py-3">
+                    <h4 class="fw-bold mb-0"><i class="bi bi-table me-2"></i>参数对比</h4>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-bordered mb-0" id="comparisonTable">
+                            <thead class="table-light">
+                                <tr id="compareHeader">
+                                    <th style="width: 30%">参数项</th>
+                                    <th id="headerA">产品A</th>
+                                    <th id="headerB">产品B</th>
+                                </tr>
+                            </thead>
+                            <tbody id="compareBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI分析 -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white py-3">
+                    <h4 class="fw-bold mb-0"><i class="bi bi-robot me-2"></i>AI智能分析</h4>
+                </div>
+                <div class="card-body">
+                    <div id="aiAnalysis" class="p-3 bg-light rounded-3"></div>
+                </div>
+            </div>
+
+            <!-- 雷达图 -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white py-3">
+                    <h4 class="fw-bold mb-0"><i class="bi bi-bar-chart me-2"></i>性能雷达图</h4>
+                </div>
+                <div class="card-body">
+                    <canvas id="radarChart" height="300"></canvas>
+                </div>
+            </div>
+
+            <!-- 操作按钮 -->
+            <div class="text-center">
+                <button class="btn btn-outline-primary me-2" onclick="window.print()">
+                    <i class="bi bi-printer me-1"></i>打印
+                </button>
+                <a href="{{ url_for('main.contact') }}" class="btn btn-primary">
+                    <i class="bi bi-chat-dots me-1"></i>联系工程师获取选型建议
+                </a>
+            </div>
+        </div>
+
+        <!-- 无结果 -->
+        <div id="noResult" class="text-center py-5 d-none">
+            <i class="bi bi-search display-1 text-muted"></i>
+            <h4 class="mt-3 text-muted">选择两款产品开始对比</h4>
+            <p class="text-muted">选择同一类别下的两款产品，AI将为您分析差异</p>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const productA = document.getElementById('productA');
+const productB = document.getElementById('productB');
+const compareBtn = document.getElementById('compareBtn');
+
+productA.addEventListener('change', checkCompare);
+productB.addEventListener('change', checkCompare);
+
+function checkCompare() {
+    compareBtn.disabled = !(productA.value && productB.value && productA.value !== productB.value);
+}
+
+compareBtn.addEventListener('click', doCompare);
+
+async function doCompare() {
+    const aId = productA.value;
+    const bId = productB.value;
+
+    document.getElementById('loadingSpinner').classList.remove('d-none');
+    document.getElementById('compareResult').classList.add('d-none');
+
+    // 更新步骤状态
+    document.getElementById('step2').classList.add('active');
+
+    try {
+        const resp = await fetch('{{ url_for("products.compare_api") }}', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({product_ids: [parseInt(aId), parseInt(bId)]}),
+        });
+        const data = await resp.json();
+
+        document.getElementById('loadingSpinner').classList.add('d-none');
+        document.getElementById('step2').classList.remove('active');
+        document.getElementById('step3').classList.add('active');
+
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+
+        // 填充表头
+        document.getElementById('headerA').textContent = data.products[0].name;
+        document.getElementById('headerB').textContent = data.products[1].name;
+
+        // 填充数据表
+        const tbody = document.getElementById('compareBody');
+        tbody.innerHTML = '';
+        data.comparison_table.forEach(row => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td class="fw-medium">${row.param}</td>
+                <td>${row['product_' + aId] || '-'}</td>
+                <td>${row['product_' + bId] || '-'}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        // AI分析结果
+        document.getElementById('aiAnalysis').innerHTML = data.ai_analysis
+            ? data.ai_analysis.replace(/\n/g, '<br>')
+            : 'AI分析暂不可用，请直接联系技术团队。';
+
+        // 雷达图
+        const allKeys = data.comparison_table.map(r => r.param);
+        const valsA = data.comparison_table.map(r => {
+            const v = r['product_' + aId];
+            return typeof v === 'number' ? v : 5;
+        });
+        const valsB = data.comparison_table.map(r => {
+            const v = r['product_' + bId];
+            return typeof v === 'number' ? v : 5;
+        });
+
+        new Chart(document.getElementById('radarChart'), {
+            type: 'radar',
+            data: {
+                labels: allKeys,
+                datasets: [{
+                    label: data.products[0].name,
+                    data: valsA,
+                    borderColor: '#005b9f',
+                    backgroundColor: 'rgba(0, 91, 159, 0.1)',
+                }, {
+                    label: data.products[1].name,
+                    data: valsB,
+                    borderColor: '#28a745',
+                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                }]
+            },
+            options: {
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        suggestedMax: 10,
+                    }
+                }
+            }
+        });
+
+        document.getElementById('compareResult').classList.remove('d-none');
+
+    } catch (e) {
+        document.getElementById('loadingSpinner').classList.add('d-none');
+        alert('对比分析暂不可用，请稍后重试或直接联系技术团队。');
+    }
+}
+
+// 如果URL有add参数，自动选中
+const urlParams = new URLSearchParams(window.location.search);
+const addId = urlParams.get('add');
+if (addId) {
+    const option = productA.querySelector(`option[value="${addId}"]`);
+    if (option) productA.value = addId;
+    checkCompare();
+}
+</script>
+{% endblock %}

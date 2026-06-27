@@ -1,0 +1,64 @@
+# 清徽半导体材料网站 - Docker Compose
+# 使用方法:
+#   docker compose up -d                    # 启动
+#   docker compose logs -f                  # 查看日志
+#   docker compose exec web python scripts/seed_products.py  # 初始化数据
+
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: vvnano-web
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    environment:
+      - FLASK_CONFIG=production
+      - DATABASE_URL=mysql+pymysql://vvnano:${MYSQL_PASSWORD}@db:3306/vvnano
+    volumes:
+      - ./instance:/app/instance
+      - ./static/images:/app/static/images
+      - ./uploads:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - vvnano-net
+
+  db:
+    image: mysql:8.0
+    container_name: vvnano-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: vvnano
+      MYSQL_USER: vvnano
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-vvnano2025}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root123}
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./scripts/mysql-init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - vvnano-net
+
+  # 可选: 如果知识图谱在同一台服务器上，可以加入网络
+  # kg:
+  #   image: semistanley/semiconductor-knowledge-graph:latest
+  #   container_name: vvnano-kg
+  #   restart: unless-stopped
+  #   networks:
+  #     - vvnano-net
+
+volumes:
+  mysql-data:
+
+networks:
+  vvnano-net:
+    driver: bridge

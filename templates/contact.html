@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% block title %}联系我们 - {{ site_name }}{% endblock %}
+
+{% block content %}
+<section class="page-header bg-primary text-white py-5">
+    <div class="container text-center">
+        <h1 class="fw-bold mb-2">联系我们</h1>
+        <p class="mb-0 opacity-75">获取技术资料、样品或报价</p>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-7">
+                <h3 class="fw-bold mb-4"><i class="bi bi-chat-dots me-2"></i>技术咨询 / 询盘</h3>
+                <form id="inquiryForm" novalidate>
+                    <input type="hidden" name="product_name" value="{{ preselected_product or '' }}">
+                    <input type="hidden" name="source_page" value="{{ request.referrer or '直接访问' }}">
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">姓名 <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-control-lg" name="name" required placeholder="您的姓名">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">公司名称</label>
+                            <input type="text" class="form-control form-control-lg" name="company" placeholder="公司/机构名称">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">电话 <span class="text-danger">*</span></label>
+                            <input type="tel" class="form-control form-control-lg" name="phone" required placeholder="您的联系电话">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">邮箱</label>
+                            <input type="email" class="form-control form-control-lg" name="email" placeholder="您的邮箱">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">感兴趣的产品</label>
+                            <select class="form-select form-select-lg" name="product_name">
+                                <option value="">-- 请选择（可选）--</option>
+                                <optgroup label="光刻胶">
+                                    <option value="PR-2000 i-line光刻胶">PR-2000 i-line光刻胶</option>
+                                    <option value="PR-3000i KrF光刻胶">PR-3000i KrF光刻胶</option>
+                                    <option value="PR-1000krf ArF光刻胶">PR-1000krf ArF光刻胶</option>
+                                </optgroup>
+                                <optgroup label="电镀药水">
+                                    <option value="EC-100 电镀铜液">EC-100 电镀铜液</option>
+                                    <option value="EC-200 电镀锡液">EC-200 电镀锡液</option>
+                                </optgroup>
+                                <optgroup label="刻蚀气体">
+                                    <option value="EG-200 刻蚀气体">EG-200 刻蚀气体</option>
+                                </optgroup>
+                                <optgroup label="除湿材料">
+                                    <option value="DA-1500 除湿剂 (MacDermid Alpha)">DA-1500 除湿剂</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">需求描述 <span class="text-danger">*</span></label>
+                            <textarea class="form-control form-control-lg" name="message" rows="4" required placeholder="请描述您的技术需求、工艺参数要求或需要的资料类型..."></textarea>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary btn-lg px-5" id="submitBtn">
+                                <i class="bi bi-send me-2"></i>提交咨询
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- 提交成功提示 -->
+                <div id="successMessage" class="d-none">
+                    <div class="alert alert-success py-4 text-center">
+                        <i class="bi bi-check-circle-fill display-5 d-block mb-3"></i>
+                        <h4 class="fw-bold">提交成功！</h4>
+                        <p class="mb-0">感谢您的咨询！我们的技术团队将在24小时内与您联系。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="card border-0 bg-light">
+                    <div class="card-body p-4">
+                        <h4 class="fw-bold mb-4">联系方式</h4>
+                        <div class="d-flex mb-4">
+                            <i class="bi bi-geo-alt-fill text-primary fs-4 me-3"></i>
+                            <div>
+                                <strong>地址</strong>
+                                <p class="mb-0 text-muted">{{ company_address }}</p>
+                            </div>
+                        </div>
+                        <div class="d-flex mb-4">
+                            <i class="bi bi-telephone-fill text-primary fs-4 me-3"></i>
+                            <div>
+                                <strong>电话</strong>
+                                <p class="mb-0 text-muted">{{ company_phone }}</p>
+                                {% if company_phone_hk %}
+                                <p class="mb-0 text-muted">{{ company_phone_hk }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="d-flex mb-4">
+                            <i class="bi bi-envelope-fill text-primary fs-4 me-3"></i>
+                            <div>
+                                <strong>邮箱</strong>
+                                <p class="mb-0"><a href="mailto:{{ company_email }}" class="text-decoration-none">{{ company_email }}</a></p>
+                            </div>
+                        </div>
+                        <hr>
+                        <h5 class="fw-bold mb-3">响应承诺</h5>
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="bi bi-clock text-success me-2"></i>
+                            <small>技术咨询 24小时内回复</small>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="bi bi-clock text-success me-2"></i>
+                            <small>样品申请 2-3个工作日内发出</small>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-clock text-success me-2"></i>
+                            <small>紧急需求 可协调现货</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.getElementById('inquiryForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>提交中...';
+
+    const formData = new FormData(this);
+    const data = {};
+    formData.forEach((value, key) => data[key] = value);
+
+    try {
+        const resp = await fetch('{{ url_for("inquiry.submit_inquiry") }}', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data),
+        });
+        const result = await resp.json();
+        if (result.success) {
+            document.getElementById('inquiryForm').classList.add('d-none');
+            document.getElementById('successMessage').classList.remove('d-none');
+        } else {
+            alert(result.error || '提交失败，请稍后重试');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-send me-2"></i>提交咨询';
+        }
+    } catch(e) {
+        alert('网络错误，请稍后重试');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-send me-2"></i>提交咨询';
+    }
+});
+</script>
+{% endblock %}

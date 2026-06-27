@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}服务器错误 - {{ site_name }}{% endblock %}
+{% block content %}
+<div class="min-vh-75 d-flex align-items-center justify-content-center py-5">
+    <div class="text-center">
+        <h1 class="display-1 fw-bold text-danger">500</h1>
+        <h3 class="fw-bold mb-3">服务器出了点问题</h3>
+        <p class="text-muted mb-4">我们的技术团队已收到通知，正在处理中</p>
+        <a href="{{ url_for('main.index') }}" class="btn btn-primary btn-lg px-4">返回首页</a>
+    </div>
+</div>
+{% endblock %}

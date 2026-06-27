@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }}{% if product.model %} - {{ product.model }}{% endif %} - {{ site_name }}{% endblock %}
+
+{% block content %}
+<!-- 面包屑 -->
+<section class="py-3 bg-light border-bottom">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}" class="text-decoration-none">首页</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('products.product_list') }}" class="text-decoration-none">产品中心</a></li>
+                {% if product.category %}
+                <li class="breadcrumb-item"><a href="{{ url_for('products.product_list') }}?category={{ product.category.slug }}" class="text-decoration-none">{{ product.category.name }}</a></li>
+                {% endif %}
+                <li class="breadcrumb-item active">{{ product.name }}</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<!-- 产品概览 -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-5">
+                <div class="product-main-img bg-light rounded-3 d-flex align-items-center justify-content-center" style="height: 350px;">
+                    {% if product.image %}
+                    <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}" class="img-fluid rounded-3" style="max-height: 320px;">
+                    {% else %}
+                    <i class="bi bi-cpu" style="font-size: 6rem; color: #dee2e6;"></i>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    {% if product.category %}
+                    <span class="badge bg-primary bg-opacity-10 text-primary">{{ product.category.name }}</span>
+                    {% endif %}
+                    {% if product.is_new %}<span class="badge bg-danger">新品</span>{% endif %}
+                    {% if product.stock_status == 'in_stock' %}
+                    <span class="badge bg-success">现货</span>
+                    {% elif product.stock_status == 'on_demand' %}
+                    <span class="badge bg-warning text-dark">可订货</span>
+                    {% endif %}
+                </div>
+                <h1 class="fw-bold mb-1">{{ product.name }}</h1>
+                {% if product.model %}
+                <p class="text-muted mb-3">型号: {{ product.model }}</p>
+                {% endif %}
+                {% if product.subtitle %}
+                <p class="lead mb-3">{{ product.subtitle }}</p>
+                {% endif %}
+                <p class="mb-4">{{ product.summary or '' }}</p>
+
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="{{ url_for('main.contact') }}?product={{ product.slug }}" class="btn btn-primary btn-lg">
+                        <i class="bi bi-chat-dots me-2"></i>获取样品 / 询价
+                    </a>
+                    <button class="btn btn-outline-primary btn-lg" onclick="addToCompare({{ product.id }})">
+                        <i class="bi bi-arrow-left-right me-2"></i>加入对比
+                    </button>
+                    <a href="{{ url_for('products.compare_tool') }}" class="btn btn-outline-secondary btn-lg">
+                        <i class="bi bi-bar-chart me-2"></i>对比其他产品
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 技术参数 -->
+{% if product.specs_dict %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="fw-bold mb-4"><i class="bi bi-table me-2"></i>技术参数</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead class="table-primary">
+                    <tr>
+                        <th style="width: 40%">参数</th>
+                        <th>值</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key, value in product.specs_dict.items() %}
+                    <tr>
+                        <td class="fw-medium">{{ key }}</td>
+                        <td>{{ value }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- 产品描述 -->
+{% if product.description %}
+<section class="py-5">
+    <div class="container">
+        <h2 class="fw-bold mb-4"><i class="bi bi-file-text me-2"></i>产品详情</h2>
+        <div class="product-description">
+            {{ product.description | safe }}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- 应用场景 -->
+{% if product.applications %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="fw-bold mb-4"><i class="bi bi-geo-alt me-2"></i>应用场景</h2>
+        <div class="row g-3">
+            {% for app in product.applications.split('\n') if app.strip() %}
+            <div class="col-md-4">
+                <div class="d-flex align-items-center p-3 bg-white rounded-3 shadow-sm">
+                    <i class="bi bi-check-circle-fill text-primary me-2"></i>
+                    <span>{{ app.strip() }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- 相关产品 -->
+{% if related_products %}
+<section class="py-5">
+    <div class="container">
+        <h2 class="fw-bold mb-4">同类产品推荐</h2>
+        <div class="row g-4">
+            {% for rp in related_products %}
+            <div class="col-md-3 col-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-cpu display-5 text-muted mb-2 d-block"></i>
+                        <h6 class="fw-bold">{{ rp.name }}</h6>
+                        {% if rp.model %}<small class="text-muted">{{ rp.model }}</small>{% endif %}
+                        <div class="mt-2">
+                            <a href="{{ url_for('products.product_detail', slug=rp.slug) }}" class="btn btn-sm btn-outline-primary">查看</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- 询盘 CTA -->
+<section class="py-5 bg-primary text-white text-center">
+    <div class="container">
+        <h2 class="fw-bold mb-3">对这款产品感兴趣？</h2>
+        <p class="lead mb-4 opacity-90">获取详细技术资料、样品或报价</p>
+        <a href="{{ url_for('main.contact') }}?product={{ product.slug }}" class="btn btn-light btn-lg px-5">
+            <i class="bi bi-chat-dots me-2"></i>立即咨询
+        </a>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function addToCompare(productId) {
+    let compareList = JSON.parse(sessionStorage.getItem('compareList') || '[]');
+    if (!compareList.includes(productId)) {
+        compareList.push(productId);
+        sessionStorage.setItem('compareList', JSON.stringify(compareList));
+    }
+    if (compareList.length >= 2) {
+        window.location.href = '{{ url_for("products.compare_tool") }}';
+    } else {
+        alert('已添加到对比列表（{{ compareList|length }}/2），请再选择一款产品');
+        window.location.href = '{{ url_for("products.product_list") }}';
+    }
+}
+</script>
+{% endblock %}

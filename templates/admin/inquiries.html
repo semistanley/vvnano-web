@@ -1,0 +1,63 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}询盘管理 - 管理后台{% endblock %}
+{% block content %}
+<h2 class="fw-bold mb-4"><i class="bi bi-envelope me-2"></i>询盘管理</h2>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>时间</th>
+                        <th>姓名</th>
+                        <th>电话</th>
+                        <th>公司</th>
+                        <th>产品</th>
+                        <th>需求</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for inquiry in inquiries %}
+                    <tr class="{% if inquiry.status == 'new' %}table-warning{% endif %}">
+                        <td><small>{{ inquiry.created_at | datetime('%m-%d %H:%M') }}</small></td>
+                        <td>{{ inquiry.name }}</td>
+                        <td>{{ inquiry.phone or '-' }}</td>
+                        <td>{{ inquiry.company or '-' }}</td>
+                        <td><small>{{ inquiry.product_name or '-' }}</small></td>
+                        <td><small title="{{ inquiry.message }}">{{ inquiry.message[:30] if inquiry.message else '-' }}...</small></td>
+                        <td>
+                            <span class="badge {% if inquiry.status == 'new' %}bg-warning{% elif inquiry.status == 'contacted' %}bg-info{% else %}bg-secondary{% endif %}">
+                                {{ inquiry.status }}
+                            </span>
+                        </td>
+                        <td>
+                            <select class="form-select form-select-sm" onchange="updateStatus({{ inquiry.id }}, this.value)" style="width: 120px;">
+                                <option value="new" {% if inquiry.status == 'new' %}selected{% endif %}>未处理</option>
+                                <option value="contacted" {% if inquiry.status == 'contacted' %}selected{% endif %}>已联系</option>
+                                <option value="closed" {% if inquiry.status == 'closed' %}selected{% endif %}>已关闭</option>
+                            </select>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="8" class="text-center py-5 text-muted">暂无询盘记录</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+async function updateStatus(id, status) {
+    const formData = new FormData();
+    formData.append('status', status);
+    await fetch(`/admin/inquiry/${id}/status`, {method: 'POST', body: formData});
+    location.reload();
+}
+</script>
+{% endblock %}

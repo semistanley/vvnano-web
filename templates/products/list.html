@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}{% if current_category %}{{ current_category.name }} - {% endif %}产品中心 - {{ site_name }}{% endblock %}
+
+{% block content %}
+<!-- 页面标题 -->
+<section class="page-header bg-primary text-white py-5">
+    <div class="container text-center">
+        <h1 class="fw-bold mb-2">{{ current_category.name if current_category else '产品中心' }}</h1>
+        <p class="mb-0 opacity-75">{{ current_category.description if current_category else '为半导体制造提供高性能材料解决方案' }}</p>
+    </div>
+</section>
+
+<!-- 分类导航 -->
+<section class="py-4 border-bottom bg-white sticky-nav">
+    <div class="container">
+        <div class="d-flex flex-wrap gap-2 justify-content-center">
+            <a href="{{ url_for('products.product_list') }}"
+               class="btn {% if not current_category %}btn-primary{% else %}btn-outline-primary{% endif %} btn-sm rounded-pill">
+                全部产品
+            </a>
+            {% for cat in categories %}
+            <a href="{{ url_for('products.product_list') }}?category={{ cat.slug }}"
+               class="btn {% if current_category and current_category.id == cat.id %}btn-primary{% else %}btn-outline-primary{% endif %} btn-sm rounded-pill">
+                {{ cat.name }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- 产品列表 -->
+<section class="py-5">
+    <div class="container">
+        {% if products %}
+        <div class="row g-4">
+            {% for product in products %}
+            <div class="col-lg-3 col-md-6">
+                <div class="card product-card h-100 border-0 shadow-sm">
+                    <div class="product-img-wrapper">
+                        {% if product.image %}
+                        <img src="{{ url_for('static', filename='images/' + product.image) }}" class="card-img-top" alt="{{ product.name }}">
+                        {% else %}
+                        <div class="product-img-placeholder d-flex align-items-center justify-content-center">
+                            <i class="bi bi-cpu" style="font-size: 3rem; color: #dee2e6;"></i>
+                        </div>
+                        {% endif %}
+                        {% if product.is_new %}<span class="badge bg-danger position-absolute top-0 end-0 m-2">新品</span>{% endif %}
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <p class="text-primary small mb-1 fw-bold">{{ product.category.name if product.category else '' }}</p>
+                        <h5 class="card-title fw-bold">{{ product.name }}</h5>
+                        {% if product.model %}
+                        <p class="text-secondary small mb-2">型号: {{ product.model }}</p>
+                        {% endif %}
+                        <p class="card-text text-muted small flex-grow-1">{{ product.summary[:80] if product.summary else '' }}</p>
+                        <div class="d-flex gap-2 mt-auto">
+                            <a href="{{ url_for('products.product_detail', slug=product.slug) }}" class="btn btn-outline-primary btn-sm flex-grow-1">查看详情</a>
+                            <button class="btn btn-outline-secondary btn-sm add-compare" data-product-id="{{ product.id }}">
+                                <i class="bi bi-plus-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-inbox display-1 text-muted"></i>
+            <h4 class="mt-3 text-muted">暂无产品</h4>
+            <p class="text-muted">该分类下暂无产品，请查看其他分类或联系我们的技术团队</p>
+            <a href="{{ url_for('main.contact') }}" class="btn btn-primary mt-2">联系我们</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.querySelectorAll('.add-compare').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const productId = this.dataset.productId;
+        let compareList = JSON.parse(sessionStorage.getItem('compareList') || '[]');
+        if (!compareList.includes(productId)) {
+            compareList.push(productId);
+            sessionStorage.setItem('compareList', JSON.stringify(compareList));
+            this.innerHTML = '<i class="bi bi-check-lg"></i>';
+            this.classList.remove('btn-outline-secondary');
+            this.classList.add('btn-success');
+        }
+        // 跳转到对比页
+        if (compareList.length >= 2) {
+            window.location.href = '{{ url_for("products.compare_tool") }}';
+        } else {
+            alert('已添加到对比列表，请再选择一款产品进行对比');
+        }
+    });
+});
+</script>
+{% endblock %}

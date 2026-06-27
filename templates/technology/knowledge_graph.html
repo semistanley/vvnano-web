@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block title %}半导体工艺知识图谱 - {{ site_name }}{% endblock %}
+
+{% block content %}
+<section class="page-header bg-dark text-white py-5">
+    <div class="container text-center">
+        <i class="bi bi-diagram-3 display-1 mb-3 d-block"></i>
+        <h1 class="fw-bold mb-2">半导体工艺知识图谱</h1>
+        <p class="lead mb-0 opacity-75">一个由AI驱动的交互式半导体工艺知识库</p>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <!-- 统计卡片 -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-3 col-6">
+                <div class="card border-0 shadow-sm text-center py-4">
+                    <div class="display-4 fw-bold text-primary">{{ kg_stats.get('node_count', 200) }}</div>
+                    <p class="text-muted mb-0">工艺节点</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="card border-0 shadow-sm text-center py-4">
+                    <div class="display-4 fw-bold text-success">{{ kg_stats.get('relation_count', 1000) }}</div>
+                    <p class="text-muted mb-0">关联关系</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="card border-0 shadow-sm text-center py-4">
+                    <div class="display-4 fw-bold text-warning">{{ kg_stats.get('category_count', 10) }}</div>
+                    <p class="text-muted mb-0">知识类别</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="card border-0 shadow-sm text-center py-4">
+                    <div class="display-4 fw-bold text-info">{{ kg_stats.get('user_count', '—') }}</div>
+                    <p class="text-muted mb-0">注册用户</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 功能介绍 -->
+        <div class="row g-4 mb-5">
+            <div class="col-lg-6">
+                <h2 class="fw-bold mb-4">什么是半导体知识图谱？</h2>
+                <p class="text-muted fs-5">半导体知识图谱是一个将半导体行业分散的知识点连接成网的智能平台。它将前道制程、封装测试、材料特性等领域的专业信息结构化，形成可查询、可推理的知识网络。</p>
+                <div class="d-flex flex-wrap gap-3 mt-4">
+                    <a href="{{ url_for('kg_bridge.redirect_to_kg') }}" class="btn btn-primary btn-lg px-4" target="_blank">
+                        <i class="bi bi-box-arrow-up-right me-2"></i>访问知识图谱平台
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card border-0 bg-light">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-3">核心功能</h5>
+                        <div class="d-flex mb-3">
+                            <div class="feature-icon-sm me-3">
+                                <i class="bi bi-chat-dots text-primary fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-1">AI 智能问答</h6>
+                                <small class="text-muted">用自然语言提问，AI自动查询知识图谱并生成专业回答</small>
+                            </div>
+                        </div>
+                        <div class="d-flex mb-3">
+                            <div class="feature-icon-sm me-3">
+                                <i class="bi bi-file-earmark-text text-success fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-1">文档三元组抽取</h6>
+                                <small class="text-muted">上传PDF/技术文档，AI自动抽取实体和关系并入库</small>
+                            </div>
+                        </div>
+                        <div class="d-flex mb-3">
+                            <div class="feature-icon-sm me-3">
+                                <i class="bi bi-eye text-warning fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-1">交互式可视化</h6>
+                                <small class="text-muted">点击节点展开邻居，直观探索工艺之间的关系</small>
+                            </div>
+                        </div>
+                        <div class="d-flex">
+                            <div class="feature-icon-sm me-3">
+                                <i class="bi bi-graph-up-arrow text-info fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-1">商业决策分析</h6>
+                                <small class="text-muted">每个节点附带TRL评估、采购链和商业化分析</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 知识类别 -->
+        <h2 class="fw-bold mb-4">知识类别</h2>
+        <div class="row g-3 mb-5">
+            {% for highlight in kg_highlights %}
+            <div class="col-md-3 col-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-tag fs-1 text-primary mb-2 d-block"></i>
+                        <h6 class="fw-bold">{{ highlight.get('name', '知识类别') }}</h6>
+                        <small class="text-muted">{{ highlight.get('count', 0) }} 个节点</small>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- 未来愿景 -->
+        <div class="card bg-primary text-white">
+            <div class="card-body p-5 text-center">
+                <h3 class="fw-bold mb-3">知识图谱 + 产品选型 = 您的技术顾问</h3>
+                <p class="lead mb-4 opacity-90">未来，知识图谱将与产品数据库打通，您可以直接在图谱中查询到每个工艺节点对应的材料方案</p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="{{ url_for('kg_bridge.redirect_to_kg') }}" class="btn btn-light btn-lg px-4" target="_blank">
+                        <i class="bi bi-box-arrow-up-right me-2"></i>访问体验
+                    </a>
+                    <a href="{{ url_for('main.contact') }}" class="btn btn-outline-light btn-lg px-4">
+                        <i class="bi bi-chat-dots me-2"></i>了解更多
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

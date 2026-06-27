@@ -1,0 +1,272 @@
+/* ==================== 清徽半导体材料 - 全局样式 ==================== */
+:root {
+    --primary-blue: #005b9f;
+    --secondary-blue: #0077cc;
+    --silver: #c0c0c0;
+    --dark-gray: #333333;
+    --medium-gray: #666666;
+    --light-gray: #f5f5f5;
+    --white: #ffffff;
+    --accent-orange: #ff6b35;
+    --primary-rgb: 0, 91, 159;
+}
+
+body {
+    font-family: 'Arial', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+    color: var(--dark-gray);
+    padding-top: 76px;
+}
+
+a {
+    color: var(--primary-blue);
+    transition: color 0.2s;
+}
+a:hover {
+    color: var(--secondary-blue);
+}
+
+/* ==================== 导航栏 ==================== */
+.navbar {
+    backdrop-filter: blur(5px);
+    background-color: rgba(255, 255, 255, 0.95) !important;
+}
+.navbar .brand-text {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary-blue);
+}
+.navbar .nav-link {
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem !important;
+    transition: color 0.2s;
+}
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
+    color: var(--primary-blue) !important;
+}
+.dropdown-menu {
+    border: none;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+
+/* ==================== HERO 区域 ==================== */
+.hero-section {
+    background: linear-gradient(135deg, rgba(0, 45, 90, 0.85), rgba(0, 91, 159, 0.75)),
+                url('../images/hero-bg.jpg') center/cover no-repeat;
+    min-height: 70vh;
+    background-attachment: fixed;
+}
+
+.hero-section h1 {
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+/* ==================== 动画 ==================== */
+.animate-fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease forwards;
+}
+.animate-fade-in.delay-1 { animation-delay: 0.2s; }
+.animate-fade-in.delay-2 { animation-delay: 0.4s; }
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==================== 页面标题 ==================== */
+.page-header {
+    margin-top: -1px;
+}
+.page-header h1 {
+    font-size: 2.5rem;
+}
+
+/* ==================== 产品卡片 ==================== */
+.product-card {
+    transition: all 0.3s ease;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+}
+.product-img-wrapper {
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+    background-color: var(--light-gray);
+}
+.product-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+}
+.product-card:hover .product-img-wrapper img {
+    transform: scale(1.08);
+}
+.product-img-placeholder {
+    height: 100%;
+    background: linear-gradient(135deg, #f0f4f8, #e2e8f0);
+}
+
+/* ==================== 文章卡片 ==================== */
+.article-card {
+    transition: all 0.3s ease;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.article-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08) !important;
+}
+.article-img-placeholder {
+    height: 160px;
+}
+
+/* ==================== 新闻卡片 ==================== */
+.news-card {
+    border-left: 3px solid var(--primary-blue) !important;
+    border-radius: 8px;
+}
+
+/* ==================== 解决方案卡片 ==================== */
+.solution-card {
+    border-radius: 12px;
+    transition: all 0.3s;
+}
+.solution-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.1) !important;
+}
+.solution-icon {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ==================== 特色功能图标 ==================== */
+.feature-icon {
+    width: 65px;
+    height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    background: rgba(var(--primary-rgb), 0.08);
+}
+.feature-icon-sm {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgba(var(--primary-rgb), 0.08);
+}
+
+/* ==================== 知识图谱入口 ==================== */
+.kg-stats .display-6 {
+    font-weight: 800;
+}
+
+/* ==================== 对比步骤 ==================== */
+.step-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin: 0 auto;
+}
+.step-circle.active {
+    background-color: var(--primary-blue);
+    color: white;
+}
+
+/* ==================== 产品描述 ==================== */
+.product-description {
+    line-height: 1.9;
+}
+.product-description h2,
+.product-description h3 {
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--primary-blue);
+}
+
+/* ==================== 文章内容 ==================== */
+.article-content {
+    line-height: 1.9;
+}
+.article-content h2 { font-size: 1.75rem; margin-top: 2rem; margin-bottom: 1rem; color: var(--primary-blue); }
+.article-content h3 { font-size: 1.5rem; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+.article-content p { margin-bottom: 1.25rem; }
+.article-content ul, .article-content ol { margin-bottom: 1.25rem; padding-left: 1.5rem; }
+.article-content blockquote {
+    border-left: 4px solid var(--primary-blue);
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    color: var(--medium-gray);
+    font-style: italic;
+}
+
+/* ==================== 浮动按钮 ==================== */
+.float-inquiry {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 999;
+}
+.float-inquiry .btn {
+    padding: 12px 24px;
+    box-shadow: 0 4px 15px rgba(0,91,159,0.3);
+}
+
+/* ==================== 页脚 ==================== */
+.footer a:hover {
+    color: white !important;
+}
+
+/* ==================== 响应式 ==================== */
+@media (max-width: 768px) {
+    .hero-section {
+        min-height: 60vh;
+        background-attachment: scroll;
+    }
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+    .page-header h1 {
+        font-size: 1.8rem;
+    }
+    .float-inquiry .btn {
+        padding: 10px 18px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 576px) {
+    body { padding-top: 66px; }
+    .hero-section { min-height: 50vh; }
+}
+
+/* ==================== 打印样式 ==================== */
+@media print {
+    .navbar, .footer, .float-inquiry, .sticky-nav { display: none !important; }
+    body { padding-top: 0; }
+}
