@@ -67,9 +67,12 @@ def create_app(config_name=None):
             dt = dt.replace(tzinfo=None)
         return dt.strftime(fmt)
 
-    # 创建数据库表 (幂等操作，多次执行安全)
+    # 创建数据库表 (容错处理)
     with app.app_context():
-        db.create_all()
+        try:
+            db.create_all()
+        except Exception as e:
+            app.logger.warning(f'建表提示 (可忽略): {e}')
 
     return app
 
